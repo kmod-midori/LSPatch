@@ -74,8 +74,8 @@ namespace lspd {
     void PatchLoader::InitArtHooker(JNIEnv* env, const InitInfo& initInfo) {
         Context::InitArtHooker(env, initInfo);
         handler = initInfo;
-        art::DisableInline(initInfo);
-        art::DisableBackgroundVerification(initInfo);
+        art::ProfileSaver::DisableInline(initInfo);
+        art::FileManager::DisableBackgroundVerification(initInfo);
     }
 
     void PatchLoader::InitHooks(JNIEnv* env) {
@@ -95,13 +95,13 @@ namespace lspd {
         lsplant::InitInfo initInfo {
                 .inline_hooker = [](auto t, auto r) {
                     void* bk = nullptr;
-                    return HookFunction(t, r, &bk) == RS_SUCCESS ? bk : nullptr;
+                    return HookArtFunction(t, r, &bk) == 0 ? bk : nullptr;
                 },
                 .inline_unhooker = [](auto t) {
-                    return UnhookFunction(t) == RT_SUCCESS;
+                    return UnhookArtFunction(t) == 0;
                 },
                 .art_symbol_resolver = [](auto symbol) {
-                    return GetArt()->getSymbAddress<void*>(symbol);
+                    return GetArt()->getSymbAddress(symbol);
                 },
                 .art_symbol_prefix_resolver = [](auto symbol) {
                     return GetArt()->getSymbPrefixFirstAddress(symbol);
