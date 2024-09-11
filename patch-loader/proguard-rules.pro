@@ -16,6 +16,7 @@
 -keep class com.android.internal.**{*;}
 -keep class xposed.dummy.**{*;}
 -keep class com.wind.xposed.entry.util.**{*;}
+-keep class org.apache.commons.lang3.**{*;}
 
 -keep class com.swift.sandhook.**{*;}
 -keep class com.swift.sandhook.xposedcompat.**{*;}
